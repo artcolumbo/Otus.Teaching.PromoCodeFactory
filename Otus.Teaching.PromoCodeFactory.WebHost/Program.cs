@@ -7,12 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();
-builder.Services.AddScoped(typeof(IRepository<Employee>), (x) => 
+
+builder.Services.AddSingleton(typeof(IRepository<Employee>), (x) => 
     new InMemoryRepository<Employee>(FakeDataFactory.Employees));
-builder.Services.AddScoped(typeof(IRepository<Role>), (x) => 
+builder.Services.AddSingleton(typeof(IRepository<Role>), (x) => 
     new InMemoryRepository<Role>(FakeDataFactory.Roles));
 
 var app = builder.Build();
@@ -27,5 +28,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
+
+app.MapControllers();
 
 app.Run();

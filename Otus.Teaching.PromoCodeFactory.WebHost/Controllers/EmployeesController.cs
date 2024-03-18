@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories;
 using Otus.Teaching.PromoCodeFactory.Core.Domain.Administration;
 using Otus.Teaching.PromoCodeFactory.WebHost.Models;
+using Otus.Teaching.PromoCodeFactory.WebHost.Models.Employee;
+using Otus.Teaching.PromoCodeFactory.WebHost.Models.Role;
 
 namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
 {
@@ -26,14 +28,14 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
         /// <summary>
         /// Получить данные всех сотрудников
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Данные всех сотрудников</returns>
         [HttpGet]
-        public async Task<List<EmployeeShortResponse>> GetEmployeesAsync()
+        public async Task<List<GetEmployeesModel>> GetEmployeesAsync()
         {
             var employees = await _employeeRepository.GetAllAsync();
 
             var employeesModelList = employees.Select(x => 
-                new EmployeeShortResponse()
+                new GetEmployeesModel()
                     {
                         Id = x.Id,
                         Email = x.Email,
@@ -46,20 +48,20 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
         /// <summary>
         /// Получить данные сотрудника по Id
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Данные сотрудника</returns>
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<EmployeeResponse>> GetEmployeeByIdAsync(Guid id)
+        public async Task<ActionResult<GetEmployeeModel>> GetEmployeeByIdAsync(Guid id)
         {
             var employee = await _employeeRepository.GetByIdAsync(id);
 
-            if (employee == null)
+            if (employee is null)
                 return NotFound();
             
-            var employeeModel = new EmployeeResponse()
+            var employeeModel = new GetEmployeeModel()
             {
                 Id = employee.Id,
                 Email = employee.Email,
-                Roles = employee.Roles?.Select(x => new RoleItemResponse()
+                Roles = employee.Roles?.Select(x => new GetRoleModel()
                 {
                     Name = x.Name,
                     Description = x.Description
@@ -69,6 +71,46 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
             };
 
             return employeeModel;
+        }
+
+        /// <summary>
+        /// Добавить сотрудника
+        /// </summary>
+        /// <param name="employee">Данные сотрудника</param>
+        [HttpPost]
+        public async Task CreateEmployeeAsync(CreateEmployeeModel employee)
+        {
+            var newEmployee = new Employee()
+            {
+                Id = Guid.NewGuid(),
+                AppliedPromoCodesCount = 0,
+                Email = employee.Email,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                Roles = new List<Role>(employee.Roles!)
+            };
+
+            await _employeeRepository.CreateAsync(newEmployee);
+        }
+
+        /// <summary>
+        /// Изменить данные сотрудника
+        /// </summary>
+        /// <param name="employee">Обновленные данные сотрудника</param>
+        [HttpPut]
+        public async Task UpdateEmployeeAsync(Employee employee)
+        {
+            await _employeeRepository.UpdateAsync(employee);
+        }
+
+        /// <summary>
+        /// Удалить сотрудника
+        /// </summary>
+        /// <param name="id">Id сотрудника</param>
+        [HttpDelete]
+        public async Task RemoveEmployeeAsync(Guid id)
+        {
+            await _employeeRepository.DeleteAsync(id);
         }
     }
 }

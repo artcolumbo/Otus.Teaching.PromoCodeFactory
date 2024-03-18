@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Otus.Teaching.PromoCodeFactory.WebHost.Models
+namespace Otus.Teaching.PromoCodeFactory.WebHost.Models.Role
 {
-    public class RoleItemResponse
+    public record GetRoleModel
     {
         public Guid Id { get; set; }
 

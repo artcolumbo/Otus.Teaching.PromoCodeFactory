@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories;
 using Otus.Teaching.PromoCodeFactory.Core.Domain.Administration;
-using Otus.Teaching.PromoCodeFactory.WebHost.Models;
+using Otus.Teaching.PromoCodeFactory.WebHost.Models.Role;
 
 namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
 {
@@ -25,14 +25,14 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
         /// <summary>
         /// Получить все доступные роли сотрудников
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Доступные роли</returns>
         [HttpGet]
-        public async Task<List<RoleItemResponse>> GetRolesAsync()
+        public async Task<List<GetRoleModel>> GetRolesAsync()
         {
             var roles = await _rolesRepository.GetAllAsync();
 
             var rolesModelList = roles.Select(x => 
-                new RoleItemResponse()
+                new GetRoleModel()
                 {
                     Id = x.Id,
                     Name = x.Name,
