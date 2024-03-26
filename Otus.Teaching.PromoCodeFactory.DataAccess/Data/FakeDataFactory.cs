@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Otus.Teaching.PromoCodeFactory.Core.Domain.Administration;
@@ -7,7 +8,7 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Data
 {
     public static class FakeDataFactory
     {
-        public static IEnumerable<Employee> Employees => new List<Employee>()
+        public static IList<Employee> Employees => new List<Employee>()
         {
             new Employee()
             {
@@ -17,7 +18,7 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Data
                 LastName = "Сергеев",
                 Roles = new List<Role>()
                 {
-                    Roles.FirstOrDefault(x => x.Name == "Admin")  
+                    Roles.FirstOrDefault(x => x.Name == "Admin")!
                 },
                 AppliedPromoCodesCount = 5
             },
@@ -29,13 +30,13 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Data
                 LastName = "Андреев",
                 Roles = new List<Role>()
                 {
-                    Roles.FirstOrDefault(x => x.Name == "PartnerManager")  
+                    Roles.FirstOrDefault(x => x.Name == "PartnerManager")! 
                 },
                 AppliedPromoCodesCount = 10
             },
         };
 
-        public static IEnumerable<Role> Roles => new List<Role>()
+        public static IList<Role> Roles => new List<Role>()
         {
             new Role()
             {
